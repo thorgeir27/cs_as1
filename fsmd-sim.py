@@ -231,7 +231,7 @@ def merge_dicts(*dict_args):
 
 #######################################
 # Start to simulate
-cycle = 0
+cycle = 10
 state = initial_state
 
 print('\n---Start simulation---')
