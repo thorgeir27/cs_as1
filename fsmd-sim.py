@@ -246,6 +246,29 @@ for cycle in range(iterations):
     for x, y in variables.items():
         print(x,':', y)
         
+    try:
+        if (not(fsmd_stim['fsmdstimulus']['setinput'] is None)):
+            for setinput in fsmd_stim['fsmdstimulus']['setinput']:
+                if type(setinput) is str:
+                    #Only one element
+                    if int(fsmd_stim['fsmdstimulus']['setinput']['cycle']) == cycle:
+                        execute_setinput(fsmd_stim['fsmdstimulus']['setinput']['expression'])
+                        break
+                else:
+                    #More than 1 element
+                    if int(setinput['cycle']) == cycle:
+                        execute_setinput(setinput['expression'])
+    except:
+        pass
+    
+    try:
+        if (not(fsmd_stim['fsmdstimulus']['endstate'] is None)):
+            if state == fsmd_stim['fsmdstimulus']['endstate']:
+                print('End-state reached.')
+                repeat = False
+    except:
+        pass
+                                   
     for x in range(len(fsmd[state])):
         if evaluate_condition(fsmd[state][x]['condition']):
             break
@@ -281,14 +304,14 @@ try:
                     execute_setinput(setinput['expression'])
 except:
     pass
-'''
+
 
 #
 # Description:
 # This is a code snipppet used to check the endstate value according to the
 # stimuli file content. You can see here how the 'fsmd_stim' variable is used.
 #
-'''
+
 try:
     if (not(fsmd_stim['fsmdstimulus']['endstate'] is None)):
         if state == fsmd_stim['fsmdstimulus']['endstate']:
