@@ -272,10 +272,11 @@ for cycle in range(iterations):
     for x in range(len(fsmd[state])):
         if evaluate_condition(fsmd[state][x]['condition']):
             break
-        
+    
+    
+    print("Instruction:", fsmd[state][x]['instruction'])
     execute_instruction(fsmd[state][x]['instruction'])
     state = fsmd[state][x]['nextstate']
-    
     
     
 
