@@ -1,0 +1,106 @@
+<fsmddescription>
+
+  <statelist>
+    <state>INITIALIZE</state>
+    <state>TEST</state>
+    <state>ADD</state>
+    <state>CONTINUE</state>
+    <state>FINISH</state>
+  </statelist>
+
+  <initialstate>INITIALIZE</initialstate>
+
+  <inputlist>
+    <input>in_bin</input>
+  </inputlist>
+
+  <variablelist>
+    <variable>var_bin</variable>
+    <variable>var_pos</variable>
+    <variable>var_out</variable>
+  </variablelist>
+
+  <operationlist>
+    <operation>
+      <name>init_bin</name>
+      <expression>var_bin = in_bin</expression>
+    </operation>
+    <operation>
+      <name>Add_to_out</name>
+      <expression>var_out = 2**(var_pos)+ var_out</expression>
+    </operation>
+    <operation>
+      <name>Incr_pos</name>
+      <expression>var_pos=var_pos+1 </expression>
+    </operation>
+  </operationlist>
+
+  <conditionlist>
+    <condition>
+      <name>pos_equal_leng</name>
+      <expression>var_pos == len(var_bin)</expression>
+    </condition>
+    <condition>
+      <name>pos_equal_zero</name>
+      <expression> 0 == var_bin[(len(var_bin)-var_pos)]</expression>
+    </condition>
+    <condition>
+      <name>pos_equal_one</name>
+      <expression> 1 == var_bin[(len(var_bin)-var_pos)] </expression>
+    </condition>
+  </conditionlist>
+
+  <fsmd>
+    <INITIALIZE>
+      <transition>
+        <condition>True</condition>
+        <instruction>in_bin</instruction>
+        <nextstate>TEST</nextstate>
+      </transition>
+    </INITIALIZE>
+
+    <TEST>
+      <transition>
+        <condition>pos_equal_leng</condition>
+        <instruction>NOP</instruction>
+        <nextstate>FINISH</nextstate>
+      </transition>
+      <transition>
+        <condition>pos_equal_zero</condition>
+        <instruction>NOP</instruction>
+        <nextstate>CONTINUE</nextstate>
+      </transition>
+      <transition>
+        <condition>pos_equal_one</condition>
+        <instruction>NOP</instruction>
+        <nextstate>ADD</nextstate>
+      </transition>
+    </TEST>
+
+    <CONTINUE>
+      <transition>
+        <condition>True</condition>
+        <instruction>Incr_pos</instruction>
+        <nextstate>TEST</nextstate>
+      </transition>
+    </CONTINUE>
+
+    <ADD>
+      <transition>
+        <condition>True</condition>
+        <instruction>Add</instruction>
+        <instruction>Incr_pos</instruction>
+        <nextstate>TEST</nextstate>
+      </transition>
+    </ADD>
+
+    <FINISH>
+      <transition>
+        <condition>True</condition>
+        <instruction>NOP</instruction>
+        <nextstate>FINISH</nextstate>
+      </transition>
+    </FINISH>
+  </fsmd>
+
+</fsmddescription>
