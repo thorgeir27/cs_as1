@@ -3,7 +3,7 @@
 import sys
 import xmltodict
 
-print("Welcome to the FSMD simulator! - Version ?? - Designed by ??")
+print("Welcome to the FSMD simulator! - Version 1 - Designed by Maggie, Naja and Þorgeir")
 
 if len(sys.argv) < 3:
     print('Too few arguments.')
@@ -215,7 +215,7 @@ def evaluate_condition(condition):
     for element in conditions:
         condition_explicit = condition_explicit.replace(element, conditions[element])
     #print('----' + condition_explicit)
-    return eval(condition_explicit, {'__builtins__': None}, merge_dicts(variables, inputs))
+    return eval(condition_explicit, {'__builtins__' : None, 'len' : len}, merge_dicts(variables, inputs))
 
 
 #
@@ -236,8 +236,7 @@ state = initial_state
 
 print('\n---Start simulation---')
 
-######################################
-######################################
+#Loop trough the cycles
 for cycle in range(iterations):
     print('------', 'Cycle: ', cycle, '------')
     print('State:', state)
@@ -245,7 +244,11 @@ for cycle in range(iterations):
     #Print variables and their values
     for x, y in variables.items():
         print(x,':', y)
-        
+    #
+    # Description:
+    # This is a code snippet used to update the inputs values according to the
+    # stimuli file content. You can see here how the 'fsmd_stim' variable is used.
+    #    
     try:
         if (not(fsmd_stim['fsmdstimulus']['setinput'] is None)):
             for setinput in fsmd_stim['fsmdstimulus']['setinput']:
@@ -260,7 +263,11 @@ for cycle in range(iterations):
                         execute_setinput(setinput['expression'])
     except:
         pass
-    
+    #
+    # Description:
+    # This is a code snipppet used to check the endstate value according to the
+    # stimuli file content. You can see here how the 'fsmd_stim' variable is used.
+    #
     try:
         if (not(fsmd_stim['fsmdstimulus']['endstate'] is None)):
             if state == fsmd_stim['fsmdstimulus']['endstate']:
@@ -268,14 +275,16 @@ for cycle in range(iterations):
                 repeat = False
     except:
         pass
-                                   
+    
+    #Loop trough the conditionlist                            
     for x in range(len(fsmd[state])):
         if evaluate_condition(fsmd[state][x]['condition']):
             break
     
-    
-    print("Instruction:", fsmd[state][x]['instruction'])
+    #Print which instructions will be excuted and execute them
+    print("Instruction(s):", fsmd[state][x]['instruction'])
     execute_instruction(fsmd[state][x]['instruction'])
+    #Set state for next cycle
     state = fsmd[state][x]['nextstate']
     
     
@@ -284,40 +293,3 @@ for cycle in range(iterations):
 ######################################
 
 print('\n---End of simulation---')
-
-#
-# Description:
-# This is a code snippet used to update the inputs values according to the
-# stimuli file content. You can see here how the 'fsmd_stim' variable is used.
-#
-'''
-try:
-    if (not(fsmd_stim['fsmdstimulus']['setinput'] is None)):
-        for setinput in fsmd_stim['fsmdstimulus']['setinput']:
-            if type(setinput) is str:
-                #Only one element
-                if int(fsmd_stim['fsmdstimulus']['setinput']['cycle']) == cycle:
-                    execute_setinput(fsmd_stim['fsmdstimulus']['setinput']['expression'])
-                break
-            else:
-                #More than 1 element
-                if int(setinput['cycle']) == cycle:
-                    execute_setinput(setinput['expression'])
-except:
-    pass
-
-
-#
-# Description:
-# This is a code snipppet used to check the endstate value according to the
-# stimuli file content. You can see here how the 'fsmd_stim' variable is used.
-#
-
-try:
-    if (not(fsmd_stim['fsmdstimulus']['endstate'] is None)):
-        if state == fsmd_stim['fsmdstimulus']['endstate']:
-            print('End-state reached.')
-            repeat = False
-except:
-    pass
-'''
